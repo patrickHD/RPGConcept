@@ -1,0 +1,81 @@
+﻿<Window x:Class="FinalProject.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:local="clr-namespace:FinalProject"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1280" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+    <Viewbox Stretch="Uniform" StretchDirection="Both">
+        <Grid x:Name="superGrid">
+            <Image x:Name="___ignore" HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792" Stretch="Fill"/>
+            <Grid x:Name="battleGrid" Visibility="Hidden">
+                <Image x:Name="bgImg" HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792" Source="res/img/arena.png" Stretch="Fill"/>
+                <Rectangle x:Name="playerImg" HorizontalAlignment="Left" Height="100" Margin="142,0,0,160" Stroke="Black" VerticalAlignment="Bottom" Width="100" StrokeThickness="0">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="res/img/player/battle/standing.png"/>
+                    </Rectangle.Fill>
+                    <Rectangle.Effect>
+                        <DropShadowEffect Direction="222" ShadowDepth="12" Opacity="0.5"/>
+                    </Rectangle.Effect>
+                </Rectangle>
+                <Image x:Name="enemyImg" HorizontalAlignment="Left" Height="183" Margin="509,0,0,144" VerticalAlignment="Bottom" Width="183" gif:ImageBehavior.AnimatedSource="res/img/enemy/ninja_boss.gif">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform X="185"/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                    <Image.Effect>
+                        <DropShadowEffect Direction="314" Opacity="0.5" ShadowDepth="12"/>
+                    </Image.Effect>
+                </Image>
+                <Rectangle Fill="Black" HorizontalAlignment="Left" Height="35" Margin="96,294,0,0" Stroke="Black" VerticalAlignment="Top" Width="421"/>
+                <Rectangle x:Name="apbar" Fill="Yellow" HorizontalAlignment="Left" Height="23" Margin="101,299,0,0" Stroke="Black" VerticalAlignment="Top" Width="212"/>
+                <Rectangle Fill="Black" HorizontalAlignment="Left" Height="35" Margin="96,337,0,0" Stroke="Black" VerticalAlignment="Top" Width="421"/>
+                <Rectangle x:Name="hpbar" Fill="#FFFF5D00" HorizontalAlignment="Left" Height="23" Margin="101,342,0,0" Stroke="Black" VerticalAlignment="Top" Width="400"/>
+                <Label x:Name="aplbl" Content="AP" HorizontalAlignment="Left" Margin="101,296,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="hplbl" Content="HP" HorizontalAlignment="Left" Margin="101,342,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="badhp" Content="HP: 10000" HorizontalAlignment="Left" Margin="552,58,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="18" Foreground="#FF00FF0C"/>
+            </Grid>
+            <Grid x:Name="overworldGrid" Visibility="Hidden">
+                <Image x:Name="overworldImg" HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792" Source="/res/img/map/0,0.png" Stretch="Fill"/>
+                <Image x:Name="playerWorldImg" HorizontalAlignment="Left" Height="57" Margin="253,312,0,0" VerticalAlignment="Top" Width="52" Source="/res/img/player/walking/down.png"/>
+            </Grid>
+            <Grid x:Name="startMenuGrid" Visibility="Visible">
+                <Image x:Name="titleLogoImg" HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792" RenderTransformOrigin="0.5,0.5" Source="/res/img/title_logo.png" Margin="0,4,0,-4">
+                    <Image.Effect>
+                        <BlurEffect Radius="1"/>
+                    </Image.Effect>
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="30"/>
+                            <TranslateTransform X="25" Y="23"/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+
+                <Label x:Name="titleLabel" Content="RPG Concept" HorizontalAlignment="Left" Margin="0,90,0,0" VerticalAlignment="Top" Width="792"
+                       VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Height="93" FontFamily="SimSun" FontSize="72" FontWeight="Bold" Foreground="White" FontStyle="Italic">
+                    <Label.Effect>
+                        <DropShadowEffect ShadowDepth="0" BlurRadius="18"/>
+                    </Label.Effect>
+                </Label>
+                <Label x:Name="newGameLabel" Content="New Game" HorizontalAlignment="Left" Margin="658,275,0,0" VerticalAlignment="Top" FontFamily="SimSun" FontWeight="Bold" FontSize="22" Width="122"/>
+                <Label x:Name="loadGameLabel" Content="Load Game" HorizontalAlignment="Left" Margin="658,310,0,0" VerticalAlignment="Top" FontFamily="SimSun" FontWeight="Bold" FontSize="22" Width="134"/>
+                <Label x:Name="helpGameLabel" Content="Help" HorizontalAlignment="Left" Margin="658,350,0,0" VerticalAlignment="Top" FontFamily="SimSun" FontWeight="Bold" FontSize="22"/>
+                <Label x:Name="mainMenuArrow" Content="🢂" HorizontalContentAlignment="Right" Margin="0,275,134,0" VerticalContentAlignment="Bottom" HorizontalAlignment="right"  VerticalAlignment="Top" FontFamily="SimSun" FontSize="22" FontWeight="Bold"/>
+                <GroupBox x:Name="groupBox" Visibility="Hidden" Header="" HorizontalAlignment="Left" Height="105" Margin="357,310,0,0" VerticalAlignment="Top" Width="238">
+                    <TextBox x:Name="label" HorizontalContentAlignment="Center" Text="non Toggle Window Size&#xD;&#xA;x to battle&#xD;&#xA;Use the arrow keys, Z, and&#xD;&#xA;X to move and fight"
+                             HorizontalAlignment="Left" Margin="0,0,-2,0" VerticalAlignment="Top" FontFamily="SimSun" FontSize="16" Width="228" Height="80" />
+                </GroupBox>
+
+            </Grid>
+        </Grid>
+    </Viewbox>
+</Window>
