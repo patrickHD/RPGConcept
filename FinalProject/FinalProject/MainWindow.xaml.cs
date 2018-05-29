@@ -35,34 +35,54 @@ namespace FinalProject
         public MainWindow()
         {
             InitializeComponent();
-            player = new Player("Light", ref playerWorldImg, ref mainMenuArrow, ref apbar);
-            world = new World(ref numlist, ref battleGrid);
+            world = new World(ref numlist, ref battleGrid, ref overworldImg);
+            player = new Player("Light", ref playerWorldImg, ref mainMenuArrow, ref apbar, ref world);
             mainTimer.Tick += mainTimer_Tick;
             mainTimer.Interval = new TimeSpan(10000);
             mainTimer.Start();
-            mediaPlayer.Open(world.audtitleUri);
+            mediaPlayer.Open(world.AudtitleUri);
             mediaPlayer.Play();
         }
 
         private void mainTimer_Tick(object sender, EventArgs e)
         {
-            if (player.WalkingUp == true)
+            if (player.WalkingUp)
             {
                 player.Move(Direction.Up);
             }
-            if (player.WalkingDown == true)
+            if (player.WalkingDown)
             {
                 player.Move(Direction.Down);
             }
-            if (player.WalkingLeft == true)
+            if (player.WalkingLeft)
             {
                 player.Move(Direction.Left);
             }
-            if (player.WalkingRight == true)
+            if (player.WalkingRight)
             {
                 player.Move(Direction.Right);
             }
-            if (player.InBattle == true)
+            if (player.InWorld)
+            {
+                Debug.WriteLine("p.x:" + player.X + " - p.y:" + player.Y);
+                if(player.X >= 739)
+                {
+                    player.ChangeLocation(1, 0);
+                }
+                if (player.X <= -2)
+                {
+                    player.ChangeLocation(-1, 0);
+                }
+                if (player.Y >= 360)
+                {
+                    player.ChangeLocation(0, 1);
+                }
+                if (player.Y <= -2)
+                {
+                    player.ChangeLocation(0, -1);
+                }
+            }
+            if (player.InBattle)
             {
                 badhp.Content = "HP: " + enemy.Hp;
                 hplbl.Content = "HP: " + player.Hp;
@@ -72,12 +92,15 @@ namespace FinalProject
                 }
                 MoveNum();
             }
-            if(player.InBattle == true && enemy.Hp <= 0)
+            if(player.InBattle && enemy.Hp <= 0)
             {
                 world.RemoveNum(null, true);
                 player.InBattle = false; player.InWorld = true;
                 battleGrid.Visibility = Visibility.Hidden;
                 overworldGrid.Visibility = Visibility.Visible;
+                mediaPlayer.Stop();
+                mediaPlayer.Open(world.AudWorldUri);
+                mediaPlayer.Play();
             }
         }
 
@@ -97,10 +120,13 @@ namespace FinalProject
 
         public void BattleStart()
         {
-            enemy = new Enemy(ref enemyImg, world.imgEnemies);
+            enemy = new Enemy(ref enemyImg, world.ImgEnemies);
             overworldGrid.Visibility = Visibility.Hidden;
             battleGrid.Visibility = Visibility.Visible;
             player.InBattle = true;
+            mediaPlayer.Stop();
+            mediaPlayer.Open(world.AudBattleUri);
+            mediaPlayer.Play();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -111,6 +137,9 @@ namespace FinalProject
                 player.InMenu = false; player.InWorld = true;
                 startMenuGrid.Visibility = Visibility.Hidden;
                 overworldGrid.Visibility = Visibility.Visible;
+                mediaPlayer.Stop();
+                mediaPlayer.Open(world.AudWorldUri);
+                mediaPlayer.Play();
             }
             if(player.InMenu == true && mainMenuArrow.Margin.Top == 345 && e.Key == Key.Z)
             {
@@ -132,7 +161,7 @@ namespace FinalProject
             }
             if(e.Key == Key.C)
             {
-                Debug.WriteLine(numlist.Count);
+
             }
         }
 

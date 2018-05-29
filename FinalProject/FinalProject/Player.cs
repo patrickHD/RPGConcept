@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,10 +23,20 @@ namespace FinalProject
         public bool InWorld { get; set; }
         public bool InMenu { get; set; }
         public int MenuPos { get; set; }
-
-        Image Img { get; set; }
+        public World World { get; set; }
+        public Image Img { get; set; }
         Label MenuLbl { get; set; }
         Rectangle Apbar { get; set; }
+        public double X
+        {
+            get => Img.Margin.Left;
+            set => Img.Margin = new System.Windows.Thickness(value, Img.Margin.Top, 0, 0);
+        }
+        public double Y
+        {
+            get => Img.Margin.Top;
+            set => Img.Margin = new System.Windows.Thickness(Img.Margin.Left, value, 0, 0);
+        }
 
         /// <summary>
         /// ^ new V old
@@ -68,6 +79,37 @@ namespace FinalProject
                     break;
             }
         }
+
+        internal void ChangeLocation(int x, int y)
+        {
+            Debug.WriteLine("MapX:" + MapX + ", MapY:" + MapY);
+            Debug.WriteLine("WorldCX:" + World.CurrentX + ", WorldCY:" + World.CurrentY);
+            MapX = World.CurrentX; MapY = World.CurrentY;
+            if(MapX >= 2 && x > 0 || MapX <= -2 && x < 0 || MapY >= 2 && x > 0 || MapY <= -2 && x < 0)
+            {
+                if (x > 0) { X = 700; } if(x < 0) { X = 10; }
+                if (y > 0) { Y = 330; } if(y < 0) { Y = 10; }
+            }
+            else
+            {
+                World.ChangeMap(x, y, true);
+                if (x > 0)
+                {
+                    X = 10;
+                } else if(x < 0)
+                {
+                    X = 700;
+                }
+                if(y > 0)
+                {
+                    Y = 10;
+                } else if(y < 0)
+                {
+                    Y = 340;
+                }
+            }
+        }
+
         internal void MenuMove(Direction dir)
         {
             if (InMenu == true)
@@ -212,48 +254,55 @@ namespace FinalProject
         public int Hp { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
-        public bool defending { get; set; }
-        public string actionsStr { get; set; }
+        public bool Defending { get; set; }
+        public string ActionsStr { get; set; }
+        public DispatcherTimer AtkTimer { get; set; }
+        public int AtkSince { get; set; }
+        public int MapX { get; private set; }
+        public int MapY { get; private set; }
 
         public void Attack(ref Enemy enemy, ref World world)
         {
             Random rand = new Random();
-            DispatcherTimer attackSince = new DispatcherTimer();
-            attackSince.Interval = new TimeSpan(10000);
-            if (attackSince.IsEnabled)
+            if (AtkSince > 30)
             {
-                attackSince.Stop();
-                attackSince.Interval = new TimeSpan(10000);
-                attackSince.Start();
-            }
-            else { attackSince.Start(); }
-            int chance = rand.Next(0, 100);
-            if (chance > 15 && Apbar.Width >= 50)
-            {
-                if (chance > 87)
+                int chance = rand.Next(0, 100);
+                if (chance > 12 && Apbar.Width >= 50)
                 {
-                    enemy.Hp -= Atk * 2;
-                    world.SpawnNum(World.Numoptions.crit, Atk * 2);
+                    if (chance > 87)
+                    {
+                        enemy.Hp -= Atk * 2;
+                        world.SpawnNum(World.Numoptions.crit, Atk * 2);
+                    }
+                    else
+                    {
+                        world.SpawnNum(World.Numoptions.normal, Atk);
+                        enemy.Hp -= Atk;
+                    }
+                    Apbar.Width -= 50;
                 }
                 else
                 {
-                    world.SpawnNum(World.Numoptions.normal, Atk);
-                    enemy.Hp -= Atk;
+                    world.SpawnNum(World.Numoptions.miss, 0);
                 }
-                Apbar.Width -= 50;
             }
-            else
+            if (AtkTimer.IsEnabled && AtkSince > 30)
             {
-                world.SpawnNum(World.Numoptions.miss, 0);
+                AtkSince = 0;
+                AtkTimer.Stop();
+                AtkTimer.Interval = new TimeSpan(10000);
+                AtkTimer.Start();
             }
+            else { AtkTimer.Start(); }
+
         }
-        public void defend()
+        public void Defend()
         {
-            defending = true;
-            actionsStr = Name + " takes a defensive stance.";
+            Defending = true;
+            ActionsStr = Name + " takes a defensive stance.";
         }
 
-        public void useItem()
+        public void UseItem()
         {
             Console.Clear();
             ConsoleKey keychoice = ConsoleKey.NoName;
@@ -271,24 +320,24 @@ namespace FinalProject
                 Items.ElementAtOrDefault(choice).Use(this);
                 Items.RemoveAt(choice);
             }
-            else if (choice == i && InBattle == true) { defend(); }
+            else if (choice == i && InBattle == true) { Defend(); }
             Console.Clear();
         }
 
-        public void heal(int amnt)
+        public void Heal(int amnt)
         {
             Hp += amnt; if (Hp > MaxHp) { Hp = MaxHp; }
         }
-        public void takeDamage(Enemy enemy)
+        public void TakeDamage(Enemy enemy)
         {
             int atk = enemy.Atk;
-            if (atk <= Def || (defending == true && atk <= Def * 2))
+            if (atk <= Def || (Defending == true && atk <= Def * 2))
             {
-                actionsStr = Name + " defelected the attack";
+                ActionsStr = Name + " defelected the attack";
             }
             else
             {
-                if (defending == true)
+                if (Defending == true)
                 {
                     Hp -= (atk - Def * 2);
                 }
@@ -309,20 +358,21 @@ namespace FinalProject
             }
             else
             {
-                actionsStr = "You tried to feel but your escape failed.";
+                ActionsStr = "You tried to feel but your escape failed.";
             }
         }
 
-        public Player(string name, ref Image playerImg, ref Label menulbl, ref Rectangle apbar)
+        public Player(string name, ref Image playerImg, ref Label menulbl, ref Rectangle apbar, ref World world)
         {
+            World = world;
             Name = name;
             MaxHp = Hp = 20;
             Level = 1; Exp = 0; NextLvlExp = 10;
             Atk = 50;
             Def = 3;
-            Speed = 0.4;
-            defending = false;
-            actionsStr = "";
+            Speed = 0.6;
+            Defending = false;
+            ActionsStr = "";
             Items = new List<Item>();
             InBattle = false;
             WalkingDown = WalkingLeft = WalkingRight = WalkingUp = false;
@@ -331,6 +381,10 @@ namespace FinalProject
             Img = playerImg;
             MenuLbl = menulbl;
             Apbar = apbar;
+            AtkSince = 1000;
+            AtkTimer = new DispatcherTimer();
+            AtkTimer.Tick += (s, e) => { AtkSince++; };
+            AtkTimer.Interval = new TimeSpan(10000);
         }
     }
 }

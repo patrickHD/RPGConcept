@@ -18,7 +18,7 @@ namespace FinalProject
             {
                 case Stat.Hp:
                     player.Hp += Magnitute;
-                    player.heal(Magnitute);
+                    player.Heal(Magnitute);
                     break;
 
                 default:

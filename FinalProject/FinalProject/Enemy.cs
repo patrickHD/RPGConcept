@@ -26,7 +26,7 @@ namespace FinalProject
 
         public void attack(Player player)
         {
-            if (player.defending == true)
+            if (player.Defending == true)
             {
                 actionsStr = player.Name + " blocked " + Name + "'s attack";
             }
@@ -46,7 +46,7 @@ namespace FinalProject
             Name = "Enemy";
             Random rnd = new Random();
             int gen = rnd.Next(1, 5);
-            MaxHp = Hp = rnd.Next(150, 200);// 15 + gen * 2;
+            MaxHp = Hp = 50 * rnd.Next(4, 10);// 15 + gen * 2;
             Atk = 2 + gen;
             Def = 2 + gen;
             Level = gen;

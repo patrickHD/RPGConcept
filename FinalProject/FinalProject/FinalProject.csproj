@@ -150,7 +150,13 @@
   <ItemGroup>
     <Content Include="res\audio\battle.mp3" />
     <Content Include="res\audio\fanfare.mp3" />
+    <Content Include="res\audio\sfx\menu_info.wav" />
+    <Content Include="res\audio\sfx\menu_move.wav" />
+    <Content Include="res\audio\sfx\menu_select.wav" />
+    <Content Include="res\audio\sfx\sfx1 %28discovery%29.wav" />
+    <Content Include="res\audio\sfx\sfx2 %28flourish%29.wav" />
     <Content Include="res\audio\title.mp3" />
+    <Content Include="res\audio\world.mp3" />
     <Resource Include="res\img\enemy\bird_fighter.gif" />
     <Resource Include="res\img\enemy\bird_party.gif" />
     <Resource Include="res\img\enemy\box.gif" />
