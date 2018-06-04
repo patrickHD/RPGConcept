@@ -84,7 +84,6 @@ namespace FinalProject
         {
             Debug.WriteLine("MapX:" + MapX + ", MapY:" + MapY);
             Debug.WriteLine("WorldCX:" + World.CurrentX + ", WorldCY:" + World.CurrentY);
-            MapX = World.CurrentX; MapY = World.CurrentY;
             if(MapX >= 2 && x > 0 || MapX <= -2 && x < 0 || MapY >= 2 && x > 0 || MapY <= -2 && x < 0)
             {
                 if (x > 0) { X = 700; } if(x < 0) { X = 10; }
@@ -258,8 +257,16 @@ namespace FinalProject
         public string ActionsStr { get; set; }
         public DispatcherTimer AtkTimer { get; set; }
         public int AtkSince { get; set; }
-        public int MapX { get; private set; }
-        public int MapY { get; private set; }
+        public int MapX
+        {
+            get => World.CurrentX;
+            set => World.CurrentX = value;
+        }
+        public int MapY
+        {
+            get => World.CurrentY;
+            set => World.CurrentY = value;
+        }
 
         public void Attack(ref Enemy enemy, ref World world)
         {

@@ -64,8 +64,7 @@ namespace FinalProject
             }
             if (player.InWorld)
             {
-                Debug.WriteLine("p.x:" + player.X + " - p.y:" + player.Y);
-                if(player.X >= 739)
+                if (player.X >= 739)
                 {
                     player.ChangeLocation(1, 0);
                 }
